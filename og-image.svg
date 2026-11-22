@@ -1,0 +1,213 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background: ink ground with radial wash -->
+  <defs>
+    <radialGradient id="inkWash" cx="12%" cy="-8%" r="62%">
+      <stop offset="0%" stop-color="#4078AA" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#0A1D2E" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="paperTexture" x="0" y="0" width="140" height="140" filterUnits="userSpaceOnUse">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0"/>
+      <feBlend in="SourceGraphic" in2="noise" mode="multiply" opacity="0.05"/>
+    </filter>
+  </defs>
+
+  <!-- Full ink background -->
+  <rect width="1200" height="630" fill="#0A1D2E"/>
+  <rect width="1200" height="630" fill="url(#inkWash)"/>
+
+  <!-- Central paper sheet -->
+  <g transform="translate(200, 80)">
+    <!-- Sheet shadow -->
+    <rect x="16" y="16" width="800" height="470" rx="3" fill="rgba(0,0,0,0.5)" filter="url(#paperTexture)"/>
+    <rect x="8" y="8" width="800" height="470" rx="3" fill="rgba(0,0,0,0.3)"/>
+
+    <!-- Paper sheet -->
+    <rect x="0" y="0" width="800" height="470" rx="3" fill="#EFEDE6" filter="url(#paperTexture)"/>
+
+    <!-- Perforated edges -->
+    <g fill="#0A1D2E">
+      <rect x="0" y="0" width="800" height="9">
+        <animate attributeName="height" values="9;9" dur="1s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="0" y="461" width="800" height="9" transform="rotate(180 400 465.5)"/>
+    </g>
+    <!-- Perforation dots pattern -->
+    <g fill="#0A1D2E" opacity="0.6">
+      <circle cx="7" cy="4.5" r="5"/>
+      <circle cx="21" cy="4.5" r="5"/>
+      <circle cx="35" cy="4.5" r="5"/>
+      <circle cx="49" cy="4.5" r="5"/>
+      <circle cx="63" cy="4.5" r="5"/>
+      <circle cx="77" cy="4.5" r="5"/>
+      <circle cx="91" cy="4.5" r="5"/>
+      <circle cx="105" cy="4.5" r="5"/>
+      <circle cx="119" cy="4.5" r="5"/>
+      <circle cx="133" cy="4.5" r="5"/>
+      <circle cx="147" cy="4.5" r="5"/>
+      <circle cx="161" cy="4.5" r="5"/>
+      <circle cx="175" cy="4.5" r="5"/>
+      <circle cx="189" cy="4.5" r="5"/>
+      <circle cx="203" cy="4.5" r="5"/>
+      <circle cx="217" cy="4.5" r="5"/>
+      <circle cx="231" cy="4.5" r="5"/>
+      <circle cx="245" cy="4.5" r="5"/>
+      <circle cx="259" cy="4.5" r="5"/>
+      <circle cx="273" cy="4.5" r="5"/>
+      <circle cx="287" cy="4.5" r="5"/>
+      <circle cx="301" cy="4.5" r="5"/>
+      <circle cx="315" cy="4.5" r="5"/>
+      <circle cx="329" cy="4.5" r="5"/>
+      <circle cx="343" cy="4.5" r="5"/>
+      <circle cx="357" cy="4.5" r="5"/>
+      <circle cx="371" cy="4.5" r="5"/>
+      <circle cx="385" cy="4.5" r="5"/>
+      <circle cx="399" cy="4.5" r="5"/>
+      <circle cx="413" cy="4.5" r="5"/>
+      <circle cx="427" cy="4.5" r="5"/>
+      <circle cx="441" cy="4.5" r="5"/>
+      <circle cx="455" cy="4.5" r="5"/>
+      <circle cx="469" cy="4.5" r="5"/>
+      <circle cx="483" cy="4.5" r="5"/>
+      <circle cx="497" cy="4.5" r="5"/>
+      <circle cx="511" cy="4.5" r="5"/>
+      <circle cx="525" cy="4.5" r="5"/>
+      <circle cx="539" cy="4.5" r="5"/>
+      <circle cx="553" cy="4.5" r="5"/>
+      <circle cx="567" cy="4.5" r="5"/>
+      <circle cx="581" cy="4.5" r="5"/>
+      <circle cx="595" cy="4.5" r="5"/>
+      <circle cx="609" cy="4.5" r="5"/>
+      <circle cx="623" cy="4.5" r="5"/>
+      <circle cx="637" cy="4.5" r="5"/>
+      <circle cx="651" cy="4.5" r="5"/>
+      <circle cx="665" cy="4.5" r="5"/>
+      <circle cx="679" cy="4.5" r="5"/>
+      <circle cx="693" cy="4.5" r="5"/>
+      <circle cx="707" cy="4.5" r="5"/>
+      <circle cx="721" cy="4.5" r="5"/>
+      <circle cx="735" cy="4.5" r="5"/>
+      <circle cx="749" cy="4.5" r="5"/>
+      <circle cx="763" cy="4.5" r="5"/>
+      <circle cx="777" cy="4.5" r="5"/>
+      <circle cx="793" cy="4.5" r="5"/>
+    </g>
+    <g fill="#0A1D2E" opacity="0.6" transform="translate(0, 461) rotate(180)">
+      <circle cx="7" cy="4.5" r="5"/>
+      <circle cx="21" cy="4.5" r="5"/>
+      <circle cx="35" cy="4.5" r="5"/>
+      <circle cx="49" cy="4.5" r="5"/>
+      <circle cx="63" cy="4.5" r="5"/>
+      <circle cx="77" cy="4.5" r="5"/>
+      <circle cx="91" cy="4.5" r="5"/>
+      <circle cx="105" cy="4.5" r="5"/>
+      <circle cx="119" cy="4.5" r="5"/>
+      <circle cx="133" cy="4.5" r="5"/>
+      <circle cx="147" cy="4.5" r="5"/>
+      <circle cx="161" cy="4.5" r="5"/>
+      <circle cx="175" cy="4.5" r="5"/>
+      <circle cx="189" cy="4.5" r="5"/>
+      <circle cx="203" cy="4.5" r="5"/>
+      <circle cx="217" cy="4.5" r="5"/>
+      <circle cx="231" cy="4.5" r="5"/>
+      <circle cx="245" cy="4.5" r="5"/>
+      <circle cx="259" cy="4.5" r="5"/>
+      <circle cx="273" cy="4.5" r="5"/>
+      <circle cx="287" cy="4.5" r="5"/>
+      <circle cx="301" cy="4.5" r="5"/>
+      <circle cx="315" cy="4.5" r="5"/>
+      <circle cx="329" cy="4.5" r="5"/>
+      <circle cx="343" cy="4.5" r="5"/>
+      <circle cx="357" cy="4.5" r="5"/>
+      <circle cx="371" cy="4.5" r="5"/>
+      <circle cx="385" cy="4.5" r="5"/>
+      <circle cx="399" cy="4.5" r="5"/>
+      <circle cx="413" cy="4.5" r="5"/>
+      <circle cx="427" cy="4.5" r="5"/>
+      <circle cx="441" cy="4.5" r="5"/>
+      <circle cx="455" cy="4.5" r="5"/>
+      <circle cx="469" cy="4.5" r="5"/>
+      <circle cx="483" cy="4.5" r="5"/>
+      <circle cx="497" cy="4.5" r="5"/>
+      <circle cx="511" cy="4.5" r="5"/>
+      <circle cx="525" cy="4.5" r="5"/>
+      <circle cx="539" cy="4.5" r="5"/>
+      <circle cx="553" cy="4.5" r="5"/>
+      <circle cx="567" cy="4.5" r="5"/>
+      <circle cx="581" cy="4.5" r="5"/>
+      <circle cx="595" cy="4.5" r="5"/>
+      <circle cx="609" cy="4.5" r="5"/>
+      <circle cx="623" cy="4.5" r="5"/>
+      <circle cx="637" cy="4.5" r="5"/>
+      <circle cx="651" cy="4.5" r="5"/>
+      <circle cx="665" cy="4.5" r="5"/>
+      <circle cx="679" cy="4.5" r="5"/>
+      <circle cx="693" cy="4.5" r="5"/>
+      <circle cx="707" cy="4.5" r="5"/>
+      <circle cx="721" cy="4.5" r="5"/>
+      <circle cx="735" cy="4.5" r="5"/>
+      <circle cx="749" cy="4.5" r="5"/>
+      <circle cx="763" cy="4.5" r="5"/>
+      <circle cx="777" cy="4.5" r="5"/>
+      <circle cx="793" cy="4.5" r="5"/>
+    </g>
+
+    <!-- Sheet header -->
+    <text x="40" y="70" font-family="Georgia, serif" font-weight="bold" font-size="32" fill="#16222D" letter-spacing="-0.03em">Service order</text>
+    <text x="40" y="100" font-family="Courier New, monospace" font-size="14" fill="#4C5A66" letter-spacing="0.12em" text-transform="uppercase">No. 11-0001 · Sheet 1 of 1</text>
+
+    <!-- Meta row -->
+    <line x1="40" y1="115" x2="760" y2="115" stroke="#BDB7A7" stroke-width="1"/>
+    <text x="40" y="140" font-family="Courier New, monospace" font-size="13" fill="#4C5A66" letter-spacing="0.11em" text-transform="uppercase">Windows 11 · Balanced</text>
+    <text x="600" y="140" font-family="Courier New, monospace" font-size="13" fill="#4C5A66" letter-spacing="0.11em" text-transform="uppercase" text-anchor="end">Preview · not applied</text>
+
+    <!-- Stamp: NOT APPLIED -->
+    <g transform="translate(700, 85) rotate(-7)">
+      <rect x="-10" y="-10" width="220" height="70" rx="0" fill="none" stroke="#B3261E" stroke-width="3"/>
+      <text x="100" y="22" font-family="Courier New, monospace" font-weight="bold" font-size="22" fill="#B3261E" letter-spacing="0.2em" text-anchor="middle" text-transform="uppercase">NOT APPLIED</text>
+      <line x1="20" y1="40" x2="180" y2="40" stroke="#B3261E" stroke-width="1"/>
+      <text x="100" y="58" font-family="Courier New, monospace" font-size="13" fill="#B3261E" letter-spacing="0.14em" text-anchor="middle" text-transform="uppercase">Nothing changed</text>
+    </g>
+
+    <!-- Service groups -->
+    <g font-family="Georgia, serif" fill="#16222D">
+      <!-- Group 1: Services -->
+      <text x="40" y="190" font-size="16" fill="#4C5A66" letter-spacing="0.16em" text-transform="uppercase">Services</text>
+      <line x1="40" y1="198" x2="760" y2="198" stroke="#D3CEC1" stroke-width="1"/>
+
+      <g font-family="Georgia, serif" font-size="18" font-weight="bold">
+        <text x="70" y="230">☐ Diagnostics Tracking</text>
+        <text x="70" y="265">☐ Maps Broker</text>
+        <text x="70" y="300">☐ Xbox services (4)</text>
+        <text x="70" y="335">☐ Push To Install</text>
+      </g>
+      <g font-family="Courier New, monospace" font-size="14" fill="#B3261E" letter-spacing="0.1em" text-transform="uppercase">
+        <text x="700" y="230" text-anchor="end">Off</text>
+        <text x="700" y="265" text-anchor="end">Off</text>
+        <text x="700" y="300" text-anchor="end">Off</text>
+        <text x="700" y="335" text-anchor="end">Off</text>
+      </g>
+
+      <!-- Group 2: Bundled apps -->
+      <text x="40" y="380" font-size="16" fill="#4C5A66" letter-spacing="0.16em" text-transform="uppercase">Bundled apps</text>
+      <line x1="40" y1="388" x2="760" y2="388" stroke="#D3CEC1" stroke-width="1"/>
+
+      <g font-family="Georgia, serif" font-size="18" font-weight="bold">
+        <text x="70" y="420">☐ Bing News</text>
+        <text x="70" y="455">☐ Clipchamp</text>
+        <text x="70" y="490">☐ Solitaire Collection</text>
+        <text x="70" y="525">☐ Office Hub</text>
+      </g>
+      <g font-family="Courier New, monospace" font-size="14" fill="#B3261E" letter-spacing="0.1em" text-transform="uppercase">
+        <text x="700" y="420" text-anchor="end">Remove</text>
+        <text x="700" y="455" text-anchor="end">Remove</text>
+        <text x="700" y="490" text-anchor="end">Remove</text>
+        <text x="700" y="525" text-anchor="end">Remove</text>
+      </g
+    </g>
+  </g>
+
+  <!-- Brand tagline at bottom -->
+  <text x="600" y="580" font-family="Georgia, serif" font-size="20" fill="#EDEAE1" text-anchor="middle" letter-spacing="-0.02em">Every change, on the record.</text>
+  <text x="600" y="610" font-family="Courier New, monospace" font-size="13" fill="#AEBECC" text-anchor="middle" letter-spacing="0.16em" text-transform="uppercase">Lean11 · Free for personal use</text>
+</svg>
