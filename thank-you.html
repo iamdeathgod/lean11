@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>You have the kit — Lean11</title>
+<meta name="description" content="Setup note for Lean11: unzip, preview every change, apply, restart. Free for personal use under the PolyForm Noncommercial License.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0A1D2E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme:dark;
+    --ink:#0A1D2E;
+    --paper:#EFEDE6;
+    --text:#16222D;
+    --muted:#4C5A66;
+    --rule:#BDB7A7;
+    --rule-soft:#D3CEC1;
+    --stamp:#B3261E;
+    --blue:#1D4E7C;
+    --on-ink:#EDEAE1;
+    --on-ink-muted:#AEBECC;
+    --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+    --body:"Archivo","Segoe UI",system-ui,sans-serif;
+    --record:"Courier Prime",Consolas,"Courier New",monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  body{
+    margin:0;background:var(--ink);color:var(--on-ink);
+    font-family:var(--body);font-size:17px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 520px at 12% -10%,rgba(64,120,170,.18),transparent 62%);
+  }
+  ::selection{background:var(--stamp);color:#fff}
+  :focus-visible{outline:3px solid #7FC4FF;outline-offset:3px}
+  a{color:#7FC4FF}
+  a,button,summary{touch-action:manipulation}
+  .skip{
+    position:absolute;left:-9999px;top:0;z-index:20;
+    background:var(--paper);color:var(--text);padding:10px 16px;
+    font-weight:600;text-decoration:none;
+  }
+  .skip:focus{left:12px;top:12px}
+  .wrap{max-width:840px;margin:0 auto;padding:0 24px}
+  @media (max-width:560px){.wrap{padding:0 18px}}
+
+  .masthead{border-bottom:1px solid rgba(237,234,225,.16)}
+  .masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:58px}
+  .wordmark{display:flex;align-items:baseline;gap:10px;font-family:var(--display);font-weight:800;font-size:19px;letter-spacing:-.03em;text-decoration:none;color:var(--on-ink)}
+  .wordmark span{font-family:var(--record);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-ink-muted);font-weight:400}
+  .back{font-family:var(--record);font-size:11px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;color:var(--on-ink-muted);border-bottom:1px solid rgba(237,234,225,.35);padding-bottom:2px}
+  .back:hover{color:var(--on-ink)}
+
+  main{padding:56px 0 72px}
+  @media (max-width:560px){main{padding:36px 0 56px}}
+
+  .form-head{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    font-family:var(--record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-ink-muted);padding:13px 0 0;border-top:1px solid rgba(237,234,225,.28);margin-top:26px;
+  }
+  h1{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(38px,6vw,58px);line-height:1;letter-spacing:-.038em;
+    margin:24px 0 0;text-wrap:balance;
+  }
+  .lede{margin:18px 0 0;max-width:52ch;font-size:18px;color:#C9D5DF}
+  .lede strong{color:var(--on-ink);font-weight:600}
+
+  .sheet{
+    margin-top:34px;background:var(--paper);color:var(--text);
+    padding:30px 30px 26px;
+    box-shadow:0 26px 60px -30px rgba(0,0,0,.75),0 2px 6px rgba(0,0,0,.25);
+    position:relative;
+  }
+  @media (max-width:560px){.sheet{padding:24px 20px 22px}}
+  .sheet-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;border-bottom:2px solid var(--text);padding-bottom:12px}
+  .sheet-title{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.03em;line-height:1.1}
+  .sheet-meta{font-family:var(--record);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:right;line-height:1.7}
+
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step}
+  .steps li{display:grid;grid-template-columns:46px 1fr;gap:18px;padding:20px 0;border-bottom:1px dotted var(--rule)}
+  .steps li:last-child{border-bottom:0;padding-bottom:4px}
+  .steps li::before{
+    counter-increment:step;content:counter(step,decimal-leading-zero);
+    font-family:var(--record);font-size:12px;letter-spacing:.1em;color:var(--muted);
+    border-top:1px solid var(--text);padding-top:6px;
+  }
+  .steps h2{margin:0 0 6px;font-family:var(--display);font-size:19px;font-weight:600;letter-spacing:-.02em}
+  .steps p{margin:0;font-size:15px;color:var(--muted);max-width:62ch}
+  .steps code{font-family:var(--record);font-size:13.5px;background:rgba(20,30,40,.07);padding:1px 5px;border-radius:2px;color:var(--text)}
+  .steps strong{color:var(--text)}
+
+  .notice{margin-top:26px;border-left:3px solid var(--stamp);background:rgba(179,38,30,.06);padding:16px 18px}
+  .notice h2{margin:0 0 6px;font-family:var(--record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--stamp)}
+  .notice p{margin:0;font-size:14.5px;color:var(--text)}
+  .notice a{color:var(--blue)}
+
+  .after{margin-top:26px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:13px 20px;background:var(--ink);color:var(--on-ink);
+    text-decoration:none;font-weight:600;font-size:15px;
+    transition:background-color .18s ease,transform .18s cubic-bezier(.2,.8,.2,1);
+  }
+  .btn:hover{background:#12324c;transform:translateY(-1px)}
+  .btn svg{width:16px;height:16px;flex:none}
+  @media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+  .tip{font-family:var(--record);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .tip a{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(29,78,124,.5)}
+
+  footer{border-top:1px solid rgba(237,234,225,.16);padding:30px 0 50px;font-size:13px;color:#8DA0B1}
+  .foot{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap}
+  .foot p{margin:0 0 8px;max-width:60ch;line-height:1.55}
+  .foot a{color:#7FC4FF;text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="wordmark" href="index.html">Lean11 <span>Form 11-03</span></a>
+    <a class="back" href="index.html">Back to the record</a>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <h1>You have the kit.</h1>
+    <p class="lede">Four steps. <strong>Preview first</strong>: it prints every change and modifies nothing. The whole job is reversible from the backup folder it leaves behind.</p>
+
+    <div class="form-head">
+      <span>Setup note</span>
+      <span>Free · personal licence</span>
+    </div>
+
+    <div class="sheet">
+      <div class="sheet-head">
+        <div class="sheet-title">Before you run it</div>
+        <div class="sheet-meta">Sheet 1 of 1<br>L11-SET-0001</div>
+      </div>
+
+      <ol class="steps">
+        <li>
+          <div>
+            <h2>Unzip it</h2>
+            <p>Extract <code>Lean11-1.0.0.zip</code> anywhere, such as your Desktop. Do not run it from inside the zip. There is no installer.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Preview it</h2>
+            <p>Double-click <code>Preview.cmd</code>. It lists every service, app and setting Lean11 would change, and writes nothing. If something in the list matters to you, you find out here.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Apply it</h2>
+            <p>Right-click <code>Run-Lean11.cmd</code> and choose <strong>Run as administrator</strong>. If SmartScreen appears, choose <strong>More info → Run anyway</strong>. It prints what it freed and where the backup went.</p>
+          </div>
+        </li>
+        <li>
+          <div>
+            <h2>Restart</h2>
+            <p>Reboot to finish applying the service and app changes. When you are back, compare Task Manager memory to what you saw before.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="notice">
+        <h2>If you do not like the result</h2>
+        <p>Right-click <code>Run-Rollback.cmd</code> and choose <strong>Run as administrator</strong>. It restores services, scheduled tasks and registry values from the newest <code>backup-*</code> folder. Removed Store apps have to be reinstalled from the Microsoft Store; rollback prints the list. Keep the backup folder until you are sure.</p>
+      </div>
+
+      <div class="after">
+        <a class="btn" href="Lean11-1.0.0.zip" download>
+          <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7.5m0 0 3-3m-3 3-3-3M2.5 13.5h11"/></svg>
+          Download it again
+        </a>
+        <p class="tip">Optional tip · <a href="https://ko-fi.com/YOURNAME">ko-fi.com/YOURNAME</a></p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <p><strong style="color:var(--on-ink)">Lean11</strong> is free for personal use under the PolyForm Noncommercial License 1.0.0. Commercial use needs a paid licence.</p>
+        <p>Not affiliated with, endorsed by, or sponsored by Microsoft Corporation.</p>
+      </div>
+      <div>
+        <p><a href="mailto:support@example.com">support@example.com</a></p>
+        <p><a href="index.html">Landing page</a> · <a href="index.html#questions">Questions</a></p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

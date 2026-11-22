@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lean11: Every change, on the record</title>
+<meta name="description" content="A free Windows 11 tune-up you can read before you run it. Lean11 lists every service, app and setting it will touch, then files the job with a one-click undo.">
+<meta name="theme-color" content="#0A1D2E">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lean11: Every change, on the record">
+<meta property="og:description" content="A free Windows 11 tune-up you can read before you run it. Every change itemised, every change reversible.">
+<meta property="og:url" content="https://example.com">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    color-scheme:dark;
+    --ink:#0A1D2E;
+    --ink-2:#0F2940;
+    --paper:#EFEDE6;
+    --paper-2:#E6E3D9;
+    --paper-3:#DBD7CB;
+    --rule:#BDB7A7;
+    --rule-soft:#D3CEC1;
+    --text:#16222D;
+    --muted:#4C5A66;
+    --stamp:#B3261E;
+    --blue:#1D4E7C;
+    --on-ink:#EDEAE1;
+    --on-ink-muted:#AEBECC;
+    --radius:3px;
+    --max:1180px;
+    --font-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+    --font-body:"Archivo","Segoe UI",system-ui,sans-serif;
+    --font-record:"Courier Prime",Consolas,"Courier New",monospace;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.btn-link{transition:none}.btn:hover{transform:none}}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--on-ink);
+    font-family:var(--font-body);
+    font-size:17px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(1100px 620px at 12% -8%, rgba(64,120,170,.18), transparent 62%);
+  }
+
+  ::selection{background:var(--stamp);color:#fff}
+  :focus-visible{outline:3px solid #7FC4FF;outline-offset:3px}
+  a{color:inherit}
+  a,button,summary{touch-action:manipulation}
+  .skip{
+    position:absolute;left:-9999px;top:0;z-index:20;
+    background:var(--paper);color:var(--text);padding:10px 16px;
+    font-weight:600;text-decoration:none;
+  }
+  .skip:focus{left:12px;top:12px}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+  @media (max-width:560px){.wrap{padding:0 18px}}
+
+  /* ---------- top rule ---------- */
+  .masthead{border-bottom:1px solid rgba(237,234,225,.16)}
+  .masthead .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;height:58px}
+  .wordmark{display:flex;align-items:baseline;gap:10px;font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:-.03em}
+  .wordmark span{font-family:var(--font-record);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--on-ink-muted);font-weight:400}
+  .masthead nav{display:flex;gap:22px;font-family:var(--font-record);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-muted)}
+  .masthead nav a{text-decoration:none;padding-bottom:3px;border-bottom:1px solid transparent}
+  .masthead nav a:hover{color:var(--on-ink);border-bottom-color:rgba(237,234,225,.5)}
+  @media (max-width:760px){.masthead nav{display:none}}
+
+  /* ---------- cover ---------- */
+  .cover{display:grid;grid-template-columns:1.02fr .98fr;gap:56px;align-items:start;padding:64px 0 78px}
+  @media (max-width:980px){.cover{grid-template-columns:1fr;gap:40px;padding:44px 0 56px}}
+
+  .form-head{
+    display:flex;justify-content:space-between;gap:16px;
+    font-family:var(--font-record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--on-ink-muted);padding:13px 0 0;border-top:1px solid rgba(237,234,225,.28);margin-top:34px;
+  }
+
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(40px,5.6vw,68px);
+    line-height:.98;
+    letter-spacing:-.038em;
+    font-weight:800;
+    margin:0;
+    text-wrap:balance;
+  }
+  .lede{
+    margin:22px 0 0;max-width:44ch;font-size:18.5px;line-height:1.55;color:#C9D5DF;
+  }
+  .lede strong{color:var(--on-ink);font-weight:600}
+
+  .actions{display:flex;align-items:stretch;gap:12px;margin-top:30px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;gap:11px;
+    padding:15px 22px;border-radius:var(--radius);
+    font-family:var(--font-body);font-weight:600;font-size:15.5px;
+    text-decoration:none;border:1px solid transparent;
+    transition:transform .18s cubic-bezier(.2,.8,.2,1), background-color .18s ease, border-color .18s ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn-primary{background:var(--paper);color:var(--text);border-color:var(--paper)}
+  .btn-primary:hover{background:#fff}
+  .btn-primary .meta{font-family:var(--font-record);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);border-left:1px solid var(--rule);padding-left:11px;white-space:nowrap}
+  .btn-link{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:15px 2px;font-weight:500;font-size:15px;color:var(--on-ink);
+    text-decoration:none;border-bottom:1px solid rgba(237,234,225,.35);
+    transition:border-color .18s ease,color .18s ease;
+  }
+  .btn-link:hover{border-bottom-color:var(--on-ink)}
+  .btn-link .arrow{font-family:var(--font-record);font-size:13px;color:var(--on-ink-muted)}
+  .btn svg{width:16px;height:16px;flex:none}
+  @media (max-width:560px){
+    .actions{flex-direction:column;align-items:stretch;gap:6px}
+    .btn-primary{justify-content:center;width:100%}
+    .btn-primary .meta{display:none}
+    .btn-link{justify-content:center;border-bottom:0;padding:11px 2px}
+  }
+
+  .spec{display:grid;grid-template-columns:repeat(4,auto);gap:0;margin:0;padding:0}
+  .spec-cell{padding:14px 20px 0 0}
+  .spec-cell + .spec-cell{padding-left:20px;box-shadow:inset 1px 0 0 rgba(237,234,225,.14)}
+  .spec dt{font-family:var(--font-record);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-muted);margin:0 0 5px}
+  .spec dd{margin:0;font-size:13.5px;font-weight:500;color:var(--on-ink)}
+  @media (max-width:560px){.spec{grid-template-columns:repeat(2,auto)}.spec-cell:nth-child(3){padding-left:0;box-shadow:none}.spec-cell:nth-child(3),.spec-cell:nth-child(4){border-top:1px solid rgba(237,234,225,.14);margin-top:12px;padding-top:12px}}
+
+  /* ---------- the sheet ---------- */
+  .sheet-wrap{position:relative}
+  .sheet{
+    position:relative;
+    background:var(--paper);
+    color:var(--text);
+    padding:30px 30px 26px;
+    box-shadow:0 26px 60px -28px rgba(0,0,0,.75), 0 2px 6px rgba(0,0,0,.28);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  }
+  .sheet::before,.sheet::after{
+    content:"";position:absolute;left:0;right:0;height:9px;
+    background-image:radial-gradient(circle at 7px 0, var(--ink) 5px, transparent 5.4px);
+    background-size:14px 9px;background-repeat:repeat-x;
+  }
+  .sheet::before{top:0}
+  .sheet::after{bottom:0;transform:rotate(180deg)}
+
+  .sheet-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid var(--text);padding-bottom:12px;min-height:62px}
+  .sheet-title{font-family:var(--font-display);font-weight:800;font-size:23px;letter-spacing:-.03em;line-height:1.05}
+  .sheet-no{font-family:var(--font-record);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;line-height:1.7;margin-top:5px}
+  .sheet-meta{
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    font-family:var(--font-record);font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--muted);
+    padding:12px 0;border-bottom:1px solid var(--rule);
+  }
+
+  .group{padding-top:16px}
+  .group + .group{border-top:1px solid var(--rule-soft)}
+  .group-title{
+    display:flex;align-items:baseline;gap:10px;
+    font-family:var(--font-record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);
+    margin-bottom:8px;
+  }
+  .group-title::after{content:"";flex:1;height:1px;background:var(--rule-soft)}
+
+  .item{display:grid;grid-template-columns:16px 1fr auto;gap:12px;align-items:start;padding:9px 0;border-bottom:1px dotted var(--rule)}
+  .item:last-child{border-bottom:0}
+  .box{width:14px;height:14px;border:1.5px solid var(--muted);margin-top:3px;border-radius:1px;position:relative;flex:none}
+  .box::after{content:"";position:absolute;left:3px;top:3px;right:3px;bottom:3px;background:transparent}
+  .item-name{font-size:14.5px;font-weight:600;line-height:1.3}
+  .item-note{font-size:12.5px;color:var(--muted);line-height:1.4}
+  .item-mark{font-family:var(--font-record);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--stamp);padding-top:2px;white-space:nowrap}
+
+  .sheet-foot{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;
+    margin-top:18px;padding-top:12px;border-top:2px solid var(--text);
+    font-family:var(--font-record);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  }
+  .sheet-foot a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue)}
+
+  .stamp{
+    position:absolute;top:26px;right:-6px;
+    transform:rotate(-7deg);
+    border:2.5px solid var(--stamp);
+    color:var(--stamp);
+    padding:9px 15px 8px;
+    font-family:var(--font-record);font-weight:700;font-size:15px;letter-spacing:.2em;text-transform:uppercase;
+    opacity:.86;
+    mix-blend-mode:multiply;
+    animation:stamp-in .5s cubic-bezier(.16,.84,.28,1) .18s both;
+  }
+  .stamp small{display:block;font-size:11px;letter-spacing:.14em;border-top:1px solid currentColor;margin-top:5px;padding-top:4px;font-weight:400}
+  @keyframes stamp-in{from{opacity:0;transform:rotate(-14deg)}to{opacity:.86;transform:rotate(-7deg)}}
+  @media (prefers-reduced-motion:reduce){.stamp{animation:none}}
+  @media (max-width:560px){
+    .form-head{flex-direction:column;gap:4px}
+    .sheet{padding:24px 20px 22px}
+    .sheet-head{min-height:0}
+    .stamp{position:static;display:inline-block;margin:18px 0 0;transform:rotate(-4deg);animation:none}
+  }
+
+  /* ---------- sections ---------- */
+  section{padding:76px 0;border-top:1px solid rgba(237,234,225,.14);scroll-margin-top:16px}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;gap:24px;border-bottom:1px solid rgba(237,234,225,.22);padding-bottom:16px;margin-bottom:38px}
+  h2{font-family:var(--font-display);font-weight:800;font-size:clamp(27px,3.4vw,40px);letter-spacing:-.035em;line-height:1.05;margin:0;text-wrap:balance}
+  .form-tag{font-family:var(--font-record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--on-ink-muted);white-space:nowrap;padding-bottom:4px}
+  .sub{color:#B9C6D2;max-width:60ch;margin:0 0 34px;font-size:16.5px}
+
+  /* procedure */
+  .procedure{display:grid;grid-template-columns:1.15fr .85fr;gap:52px;align-items:start}
+  @media (max-width:900px){.procedure{grid-template-columns:1fr;gap:34px}}
+  .steps{list-style:none;margin:0;padding:0;counter-reset:step}
+  .steps li{display:grid;grid-template-columns:52px 1fr;gap:18px;padding:20px 0;border-bottom:1px solid rgba(237,234,225,.14)}
+  .steps li:first-child{padding-top:0}
+  .steps li::before{
+    counter-increment:step;content:counter(step,decimal-leading-zero);
+    font-family:var(--font-record);font-size:12px;letter-spacing:.1em;color:var(--on-ink-muted);
+    border-top:1px solid rgba(237,234,225,.4);padding-top:6px;
+  }
+  .steps h3{margin:0 0 5px;font-family:var(--font-display);font-size:19px;letter-spacing:-.02em;font-weight:600}
+  .steps p{margin:0;color:#B9C6D2;font-size:15px}
+
+  .record{background:var(--paper);color:var(--text);padding:22px 22px 18px;box-shadow:0 18px 40px -24px rgba(0,0,0,.7)}
+  .record h3{font-family:var(--font-record);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;padding-bottom:8px;border-bottom:1px solid var(--rule)}
+  .record ul{list-style:none;margin:0;padding:0;font-family:var(--font-record);font-size:12.5px}
+  .record li{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dotted var(--rule)}
+  .record li:last-child{border-bottom:0}
+  .record li span:last-child{color:var(--muted);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding-top:1px}
+  .record-note{margin:14px 0 0;font-size:12.5px;line-height:1.5;color:var(--muted);border-top:1px solid var(--rule);padding-top:12px}
+
+  /* untouched notice */
+  .notice{background:var(--paper);color:var(--text);padding:0;box-shadow:0 20px 44px -26px rgba(0,0,0,.7)}
+  .notice-head{display:flex;align-items:center;gap:12px;padding:14px 22px;background:var(--stamp);color:#fff}
+  .notice-head svg{width:18px;height:18px;flex:none}
+  .notice-head span{font-family:var(--font-record);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  .notice-body{padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:0 34px}
+  @media (max-width:640px){.notice-body{grid-template-columns:1fr}.notice ul{grid-template-columns:1fr}}
+  .notice-body p{grid-column:1/-1;margin:0 0 16px;font-size:15px;color:var(--text);max-width:70ch}
+  .notice ul{list-style:none;margin:0;padding:0;grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;column-gap:34px}
+  .notice li{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dotted var(--rule);font-size:14.5px;font-weight:500}
+  .notice li::before{content:"";width:7px;height:7px;background:var(--text);flex:none;transform:translateY(-1px)}
+  .notice-foot{padding:0 22px 20px;font-family:var(--font-record);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--stamp)}
+
+  /* schedule table */
+  .tablewrap{overflow-x:auto;border-top:2px solid var(--on-ink);padding-top:8px}
+  table{width:100%;border-collapse:collapse;font-size:15px;min-width:620px}
+  caption{text-align:left;font-family:var(--font-record);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-ink-muted);padding:14px 0 0}
+  th,td{padding:13px 16px 13px 0;text-align:left;border-bottom:1px solid rgba(237,234,225,.16);vertical-align:middle}
+  thead th{font-family:var(--font-record);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--on-ink-muted);font-weight:400;border-bottom:1px solid rgba(237,234,225,.4)}
+  thead th:not(:first-child),td:not(:first-child){text-align:center;width:15%}
+  tbody th{font-weight:500;text-align:left}
+  .tick{width:17px;height:17px;display:inline-block;vertical-align:-3px;color:#7FD1A8}
+  .dash{color:#AEBECC;font-family:var(--font-record);font-size:15px;line-height:1}
+  .badge{display:inline-block;font-family:var(--font-record);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink);background:#7FD1A8;padding:2px 6px;margin-left:8px;vertical-align:2px}
+  .table-note{margin:18px 0 0;font-size:14px;color:#B9C6D2;max-width:70ch}
+
+  /* schedule: stacked comparison on small screens */
+  @media (max-width:760px){
+    .tablewrap{overflow-x:visible}
+    table{min-width:0;display:block}
+    caption{display:block}
+    thead{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    tbody{display:block}
+    tbody tr{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 10px;padding:14px 0;border-bottom:1px solid rgba(237,234,225,.16)}
+    tbody th{grid-column:1/-1;padding:0;border:0;font-size:15px;line-height:1.35;text-align:left}
+    tbody td{width:auto;padding:0;border:0;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center}
+    tbody td::before{font-family:var(--font-record);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--on-ink-muted);line-height:1}
+    tbody td:nth-of-type(1)::before{content:"Safe"}
+    tbody td:nth-of-type(2)::before{content:"Balanced"}
+    tbody td:nth-of-type(3)::before{content:"Aggressive"}
+    .tick{width:18px;height:18px}
+  }
+
+  /* fit */
+  .fit{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative}
+  @media (max-width:760px){.fit{grid-template-columns:1fr}}
+  .fit::after{content:"";position:absolute;left:50%;top:28px;bottom:28px;width:1px;background:rgba(237,234,225,.16)}
+  .fit-col{padding:28px 34px 28px 0}
+  .fit-col + .fit-col{padding-left:34px;padding-right:0}
+  @media (max-width:760px){.fit::after{display:none}.fit-col{padding:24px 0}.fit-col + .fit-col{border-top:1px solid rgba(237,234,225,.16);padding-left:0}}
+  .fit-col h3{margin:0 0 14px;font-family:var(--font-display);font-size:18px;font-weight:600;letter-spacing:-.02em}
+  .fit-col ul{list-style:none;margin:0;padding:0}
+  .fit-col li{position:relative;padding:8px 0 8px 22px;color:#B9C6D2;font-size:15px;border-bottom:1px dotted rgba(237,234,225,.14)}
+  .fit-col li:last-child{border-bottom:0}
+  .fit-col li::before{position:absolute;left:0;top:7px;font-family:var(--font-record);font-size:15px}
+  .fit-yes li::before{content:"+";color:#7FD1A8}
+  .fit-no li::before{content:"×";color:var(--stamp)}
+
+  /* bill */
+  .bill{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+  @media (max-width:900px){.bill{grid-template-columns:1fr;gap:32px}}
+  .receipt{background:var(--paper);color:var(--text);padding:26px 26px 22px;box-shadow:0 22px 48px -26px rgba(0,0,0,.72)}
+  .receipt-row{display:flex;justify-content:space-between;gap:14px;font-family:var(--font-record);font-size:13px;padding:8px 0;font-variant-numeric:tabular-nums}
+  .receipt-row span:first-child{color:var(--muted)}
+  .receipt-total{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px;padding-top:12px;border-top:2px solid var(--text)}
+  .receipt-total span{font-family:var(--font-record);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+  .receipt-total strong{font-family:var(--font-display);font-size:30px;letter-spacing:-.03em}
+  .receipt-note{margin:14px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5;border-top:1px dotted var(--rule);padding-top:12px}
+  .bill-copy p{color:#B9C6D2;margin:0 0 18px;font-size:16px;max-width:46ch}
+  .bill-copy .tip{font-family:var(--font-record);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--on-ink-muted);margin:22px 0 0}
+  .bill-copy .tip a{color:#7FC4FF;text-decoration:none;border-bottom:1px solid rgba(127,196,255,.5)}
+
+  /* faq */
+  .faq{padding-top:0}
+  details{border-bottom:1px solid rgba(237,234,225,.16)}
+  summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:baseline;
+    padding:19px 0;font-family:var(--font-display);font-size:17.5px;font-weight:600;letter-spacing:-.015em;
+  }
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-family:var(--font-record);font-weight:400;color:var(--on-ink-muted);font-size:19px;line-height:1}
+  details[open] summary::after{content:"–"}
+  details p{margin:0;padding:0 0 22px;color:#B9C6D2;font-size:15.5px;max-width:72ch}
+  details p code{font-family:var(--font-record);font-size:13.5px;background:rgba(237,234,225,.1);padding:1px 6px;color:var(--on-ink)}
+
+  /* footer */
+  footer{border-top:1px solid rgba(237,234,225,.18);padding:44px 0 60px;font-size:13.5px;color:var(--on-ink-muted)}
+  .foot{display:flex;justify-content:space-between;gap:36px;flex-wrap:wrap}
+  .foot p{margin:0 0 10px;max-width:56ch;line-height:1.55}
+  .foot a{color:#7FC4FF;text-decoration:none}
+  .foot a:hover{text-decoration:underline}
+  .colophon{margin-top:30px;padding-top:18px;border-top:1px solid rgba(237,234,225,.14);font-size:12px;color:#8DA0B1;max-width:86ch;line-height:1.6}
+  .colophon b{color:var(--on-ink-muted);font-weight:600}
+</style>
+</head>
+<body>
+
+<a class="skip" href="#top">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="wordmark" href="#top" style="text-decoration:none">Lean11 <span>Form 11-02</span></a>
+    <nav aria-label="Sections">
+      <a href="#procedure">Procedure</a>
+      <a href="#untouched">Untouched</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#bill">Download</a>
+      <a href="#questions">Questions</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ================= COVER ================= -->
+  <div class="wrap">
+    <div class="cover">
+
+      <div>
+        <h1>Every change,<br>on the record.</h1>
+
+        <p class="lede">Lean11 is a free tune-up for Windows&nbsp;11. It lists <strong>every service, app and setting</strong> it will touch before anything happens, then files the whole job with a one-click undo.</p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="Lean11-1.0.0.zip" download>
+            <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7.5m0 0 3-3m-3 3-3-3M2.5 13.5h11"/></svg>
+            Download the service kit
+            <span class="meta">Free · v1.0.0</span>
+          </a>
+          <a class="btn-link" href="#procedure">Read the procedure <span class="arrow" aria-hidden="true">↓</span></a>
+        </div>
+
+        <div class="form-head">
+          <span>Maintenance record</span>
+          <span>Issued 2026 · Sheet 1 of 1</span>
+        </div>
+
+        <dl class="spec">
+          <div class="spec-cell"><dt>Model</dt><dd>Windows 11</dd></div>
+          <div class="spec-cell"><dt>Build</dt><dd>22000 and up</dd></div>
+          <div class="spec-cell"><dt>Licence</dt><dd>Free, personal</dd></div>
+          <div class="spec-cell"><dt>Undo</dt><dd>Included</dd></div>
+        </dl>
+      </div>
+
+      <div class="sheet-wrap">
+        <div class="sheet" role="group" aria-label="Example service order">
+
+          <div class="sheet-head">
+            <div>
+              <div class="sheet-title">Service order</div>
+              <div class="sheet-no">No. 11-0001 · Sheet 1 of 1</div>
+            </div>
+          </div>
+
+          <div class="sheet-meta">
+            <span>Windows 11 · Balanced</span>
+            <span>Preview · not applied</span>
+          </div>
+
+          <div class="stamp">Not applied<small>Nothing changed</small></div>
+
+          <div class="group">
+            <div class="group-title">Services</div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Diagnostics Tracking</span><br><span class="item-note">Sends usage data in the background.</span></span><span class="item-mark">Off</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Maps Broker</span><br><span class="item-note">Runs even if you never open Maps.</span></span><span class="item-mark">Off</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Xbox services (4)</span><br><span class="item-note">Auth, save, input and networking.</span></span><span class="item-mark">Off</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Push To Install</span><br><span class="item-note">Remote app installs from the Store.</span></span><span class="item-mark">Off</span></div>
+          </div>
+
+          <div class="group">
+            <div class="group-title">Bundled apps</div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Bing News</span><br><span class="item-note">Removed for every account on the PC.</span></span><span class="item-mark">Remove</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Clipchamp</span><br><span class="item-note">Video editor, installed for all users.</span></span><span class="item-mark">Remove</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Solitaire Collection</span><br><span class="item-note">Plus in-app advertising.</span></span><span class="item-mark">Remove</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Office Hub</span><br><span class="item-note">Not Office. A shortcut to buy it.</span></span><span class="item-mark">Remove</span></div>
+          </div>
+
+          <div class="group">
+            <div class="group-title">Settings</div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Telemetry</span><br><span class="item-note">Set to the minimum the policy allows.</span></span><span class="item-mark">0</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Copilot button</span><br><span class="item-note">Removed from the taskbar.</span></span><span class="item-mark">Off</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Advertising ID</span><br><span class="item-note">Stops apps reading it for ad targeting.</span></span><span class="item-mark">Off</span></div>
+            <div class="item"><span class="box"></span><span><span class="item-name">Start suggestions</span><br><span class="item-note">No recommended apps in the Start menu.</span></span><span class="item-mark">Off</span></div>
+          </div>
+
+          <div class="sheet-foot">
+            <span>12 shown · full list in <a href="#procedure">Preview.cmd</a></span>
+            <span>L11-BAL-0001</span>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= PROCEDURE ================= -->
+  <section id="procedure">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Three steps, in this order.</h2>
+        <span class="form-tag">Procedure</span>
+      </div>
+
+      <div class="procedure">
+        <ol class="steps">
+          <li>
+            <div>
+              <h3>Preview it</h3>
+              <p>Double-click <code>Preview.cmd</code>. It prints every service, app and registry value it would change, and writes nothing. If something in the list matters to you, you find out here.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>Apply it</h3>
+              <p>Right-click <code>Run-Lean11.cmd</code> and choose <em>Run as administrator</em>. It makes the changes, then prints what it freed and where the backup went.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <h3>Undo it</h3>
+              <p>Right-click <code>Run-Rollback.cmd</code>. It restores services, scheduled tasks and registry values from the most recent backup, with no reinstall and no restore point required.</p>
+            </div>
+          </li>
+        </ol>
+
+        <div class="record">
+          <h3>The record it leaves</h3>
+          <ul>
+            <li><span>services.csv</span><span>Before</span></li>
+            <li><span>tasks.csv</span><span>Before</span></li>
+            <li><span>appx.csv</span><span>Before</span></li>
+            <li><span>registry.json</span><span>Old values</span></li>
+            <li><span>removed-appx.txt</span><span>List</span></li>
+            <li><span>report.json</span><span>Result</span></li>
+            <li><span>lean11.log</span><span>Full log</span></li>
+          </ul>
+          <p class="record-note">One folder per run, named <code>backup-</code> plus the date and time. Nothing leaves your PC.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= UNTOUCHED ================= -->
+  <section id="untouched">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>What stays untouched.</h2>
+        <span class="form-tag">Schedule A</span>
+      </div>
+
+      <div class="notice">
+        <div class="notice-head">
+          <svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 2.5 16.5h15L10 3Z"/><path d="M10 8v4m0 2.2v.1"/></svg>
+          <span>Do not modify</span>
+        </div>
+        <div class="notice-body">
+          <p>Most “optimisers” win a benchmark by switching off the things that keep your PC working. Lean11 does not touch any of these, at any level.</p>
+          <ul>
+            <li>Windows Update service</li>
+            <li>Microsoft Defender</li>
+            <li>The Microsoft Store</li>
+            <li>Your files and photos</li>
+            <li>OneDrive contents</li>
+            <li>Drivers</li>
+            <li>Network and Wi-Fi settings</li>
+            <li>Your user account</li>
+          </ul>
+        </div>
+        <div class="notice-foot">Aggressive level clears the update download cache only. Windows rebuilds it.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCHEDULE ================= -->
+  <section id="schedule">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Pick how far to go.</h2>
+        <span class="form-tag">Service schedule</span>
+      </div>
+
+      <div class="tablewrap">
+        <table role="table">
+          <caption>Balanced is the default. Preview shows any level before you commit.</caption>
+          <thead role="rowgroup">
+            <tr role="row"><th scope="col" role="columnheader">Work item</th><th scope="col" role="columnheader">Safe</th><th scope="col" role="columnheader">Balanced</th><th scope="col" role="columnheader">Aggressive</th></tr>
+          </thead>
+          <tbody role="rowgroup">
+            <tr role="row"><th scope="row" role="rowheader">Privacy and telemetry settings</th><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Disable telemetry and CEIP tasks</th><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Disable background services</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Remove bundled apps</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Temp files and recycle bin</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Windows Update download cache</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Remove <code>C:\Windows.old</code></th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">Reserved storage and hibernation shrink</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+            <tr role="row"><th scope="row" role="rowheader">DISM component cleanup</th><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><span class="dash" role="img" aria-label="Not included">–</span></td><td role="cell"><svg class="tick" viewBox="0 0 16 16" role="img" aria-label="Included"><path d="M3 8.4 6.2 11.6 13 4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-note">The last three rows cannot be undone by the rollback script. They only run at Aggressive, and Preview lists them before anything is touched.</p>
+    </div>
+  </section>
+
+  <!-- ================= FIT ================= -->
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Who this is for.</h2>
+        <span class="form-tag">Notes</span>
+      </div>
+
+      <div class="fit">
+        <div class="fit-col fit-yes">
+          <h3>Worth your time if…</h3>
+          <ul>
+            <li>You just reinstalled Windows and want it clean from the first boot.</li>
+            <li>You are setting up a laptop for someone who will not maintain it.</li>
+            <li>You want telemetry off without hand-editing the registry.</li>
+            <li>You want to see the changes and be able to take them back.</li>
+          </ul>
+        </div>
+        <div class="fit-col fit-no">
+          <h3>Save your time if…</h3>
+          <ul>
+            <li>You want overclocking, driver updates or frame-rate boosters.</li>
+            <li>The PC belongs to an employer and IT controls the settings.</li>
+            <li>You need a signed installer with no SmartScreen prompt.</li>
+            <li>The PC is slow because of a failing drive or 4&nbsp;GB of RAM. Software cannot fix hardware.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BILL ================= -->
+  <section id="bill">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Settle the bill.</h2>
+        <span class="form-tag">Account</span>
+      </div>
+
+      <div class="bill">
+        <div class="receipt" aria-label="Account summary">
+          <div class="receipt-row"><span>Lean11, personal licence</span><span>$0.00</span></div>
+          <div class="receipt-row"><span>Preview, rollback, all levels</span><span>Included</span></div>
+          <div class="receipt-row"><span>Updates for Windows 11</span><span>Included</span></div>
+          <div class="receipt-total"><span>Total due</span><strong>$0.00</strong></div>
+          <p class="receipt-note">No card, no account, no trial timer. The download is the whole product.</p>
+        </div>
+
+        <div class="bill-copy">
+          <p>Lean11 is free because it is source-available, not because it is a cut-down trial. Read the scripts in Notepad before you run them. That is the point of shipping them as plain text.</p>
+          <p>If it saved you an afternoon of reinstalling Windows, you can leave a tip. It is optional, and it does not unlock anything.</p>
+          <div class="actions">
+            <a class="btn btn-primary" href="Lean11-1.0.0.zip" download>
+              <svg viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v7.5m0 0 3-3m-3 3-3-3M2.5 13.5h11"/></svg>
+              Download the service kit
+            </a>
+          </div>
+          <!-- Replace with your real tip page (Ko-fi, Buy Me a Coffee, GitHub Sponsors). -->
+          <p class="tip">Optional tip · <a href="https://ko-fi.com/YOURNAME">ko-fi.com/YOURNAME</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= QUESTIONS ================= -->
+  <section id="questions">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Questions people ask.</h2>
+        <span class="form-tag">Reference</span>
+      </div>
+
+      <div class="faq">
+        <details>
+          <summary>Is it safe? Will it break Windows?</summary>
+          <p>Lean11 changes settings Windows already exposes through policies, services and scheduled tasks. It does not patch system files. The riskiest work (deleting <code>C:\Windows.old</code>, disabling reserved storage, and DISM <code>/ResetBase</code>) is confined to the Aggressive level and is never run silently. Preview shows every change first, and rollback puts the settings back.</p>
+        </details>
+        <details>
+          <summary>Will Windows Update still work?</summary>
+          <p>Yes. The Windows Update service is never disabled at any level. At Aggressive, Lean11 clears the update download cache; Windows rebuilds it on the next update check.</p>
+        </details>
+        <details>
+          <summary>Do I need to be technical?</summary>
+          <p>No. Unzip, double-click <code>Preview.cmd</code> to read the list, then right-click <code>Run-Lean11.cmd</code> and choose <em>Run as administrator</em>. Restart when it finishes. If you are technical, read every line of the script first. It ships as plain text.</p>
+        </details>
+        <details>
+          <summary>SmartScreen warned me. Is this malware?</summary>
+          <p>It is an unsigned PowerShell script, and Windows warns about anything unsigned that changes system settings. That is correct behaviour for a script like this. Choose <strong>More info → Run anyway</strong>, or read the <code>.ps1</code> files in Notepad first. There is no installer and no background service.</p>
+        </details>
+        <details>
+          <summary>Which versions of Windows?</summary>
+          <p>Windows 11, build 22000 or newer. Most tweaks also work on Windows 10, but Windows 10 is not the supported target. Lean11 detects the build and skips settings that do not exist on your version.</p>
+        </details>
+        <details>
+          <summary>Can I use it on more than one PC?</summary>
+          <p>Yes, on any PC you personally own or administer. The licence is PolyForm Noncommercial: free for personal use. Commercial use, including pre-installing it on machines you sell, needs a paid licence.</p>
+        </details>
+        <details>
+          <summary>What if I do not like the result?</summary>
+          <p>Run <code>Run-Rollback.cmd</code> as Administrator. It restores services, scheduled tasks and registry values from the newest backup. Removed Store apps have to be reinstalled from the Microsoft Store; rollback prints the list for you.</p>
+        </details>
+        <details>
+          <summary>Is it open source?</summary>
+          <p>It is <em>source-available</em>. The full source ships with the download and is readable, but the licence (PolyForm Noncommercial 1.0.0) restricts commercial use, so it is not OSI-approved open source. That is deliberate: it keeps the project sustainable without hiding anything from you.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <p><strong style="color:var(--on-ink)">Lean11</strong> is a small, honest cleanup tool for Windows 11. Built because reinstalling Windows should not be the only way to get a clean machine.</p>
+        <p>Not affiliated with, endorsed by, or sponsored by Microsoft Corporation.</p>
+      </div>
+      <div>
+        <p><a href="mailto:support@example.com">support@example.com</a></p>
+        <p><a href="#questions">Licence</a> · <a href="#untouched">What it leaves alone</a> · <a href="thank-you.html">Setup note</a></p>
+      </div>
+    </div>
+    <div class="colophon">
+      <b>Licence.</b> PolyForm Noncommercial 1.0.0: free for personal use; commercial use requires a paid licence. <b>Warranty.</b> Provided as-is. You are responsible for reviewing the Preview output and for keeping backups of your data. <b>Privacy.</b> The script runs locally and sends nothing; this page sets no cookies and loads only its own fonts.
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
